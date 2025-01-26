@@ -1,0 +1,91 @@
+Таблица пользователей
+CREATE TABLE users (
+    id_user INT PRIMARY KEY AUTO_INCREMENT,
+    surname_user VARCHAR(100) NOT NULL,
+    name_user VARCHAR(100) NOT NULL,
+    email_user VARCHAR(100) UNIQUE NOT NULL,
+    password_user VARCHAR(100) NOT NULL,
+    name_role VARCHAR(50) NOT NULL, (студент, препод)
+    phone_user VARCHAR(20)
+);
+Таблица курсов
+CREATE TABLE courses (
+    id_course INT PRIMARY KEY AUTO_INCREMENT,
+    name_course VARCHAR(255) NOT NULL,
+    description_course TEXT,
+    teacher_id INT,
+    FOREIGN KEY (id_teacher) REFERENCES users(id_user));
+Таблица расписания
+CREATE TABLE schedules (
+    id_schedule INT PRIMARY KEY AUTO_INCREMENT,
+    id_course INT,
+    classroom VARCHAR(50),
+    start_time DATETIME,
+    end_time DATETIME,
+    teacher_id INT,
+    FOREIGN KEY (id_course) REFERENCES courses(id_course),
+    FOREIGN KEY (id_teacher) REFERENCES users(id_user));
+Таблица учебных материалов
+CREATE TABLE study_materials (
+    id_material INT PRIMARY KEY AUTO_INCREMENT,
+    id_course INT,
+    material_type ENUM('lecture', 'seminar', 'homework', 'other') NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    file_url VARCHAR(255), (ссылка на файл)
+    uploaded_by INT, (кто загрузил)
+    upload_date DATETIME,
+    FOREIGN KEY (id_course) REFERENCES courses(id_course),
+    FOREIGN KEY (uploaded_by) REFERENCES users(id_user));
+Таблица оценок и успеваемости
+CREATE TABLE grades (
+    id_grade INT PRIMARY KEY AUTO_INCREMENT,
+    student_id INT,
+    id_course INT,
+    grade INT,
+    comments TEXT,
+    grade_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES users(id_user),
+    FOREIGN KEY (id_course) REFERENCES courses(id_course));
+Таблица индивидуальных планов развития
+CREATE TABLE idp (
+    id_idp INT PRIMARY KEY AUTO_INCREMENT,
+    student_id INT,
+    career_goals TEXT, (цели студента)
+    skills_to_improve TEXT, (навыки, которыми хочет научиться)
+    progress TEXT,
+    created_at DATETIME,
+    updated_at DATETIME,
+    FOREIGN KEY (student_id) REFERENCES users(id_user));
+Таблица резюме
+CREATE TABLE resumes (
+    id_resume INT PRIMARY KEY AUTO_INCREMENT,
+    student_id INT,
+    resume_url VARCHAR(255), (ссылка на файл с резюме),
+    created_at DATETIME,
+    FOREIGN KEY (student_id) REFERENCES users(id_user)
+);
+Таблица обратной связи
+CREATE TABLE feedback (
+    id_feedback INT PRIMARY KEY AUTO_INCREMENT,
+    student_id INT,
+    id_course INT,
+    feedback_text TEXT,
+    feedback_date DATETIME,
+    FOREIGN KEY (student_id) REFERENCES users(id_user),
+    FOREIGN KEY (id_course) REFERENCES courses(id_course)
+);
+Таблица опросов
+CREATE TABLE surveys (
+    id_survey INT PRIMARY KEY AUTO_INCREMENT,
+    name_survey VARCHAR(255),
+    start_date DATETIME,
+    end_date DATETIME);
+
+CREATE TABLE survey_responses (
+    response_id INT PRIMARY KEY AUTO_INCREMENT,
+    id_survey INT,
+    student_id INT,
+    response_text TEXT,
+    FOREIGN KEY (id_survey) REFERENCES surveys(id_survey),
+    FOREIGN KEY (student_id) REFERENCES users(id_user)
+);
