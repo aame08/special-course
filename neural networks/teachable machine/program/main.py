@@ -37,6 +37,6 @@ async def predict(file: UploadFile = File(...)):
     try:
         image = Image.open(file.file).convert('RGB')
         class_name, confidence = predict_image(image)
-        return  JSONResponse(content={'class': class_name, 'confidence': confidence})
+        return JSONResponse(content={'class': class_name, 'confidence': confidence})
     except Exception as e:
         return JSONResponse(content={'error': str(e)}, status_code=500)
