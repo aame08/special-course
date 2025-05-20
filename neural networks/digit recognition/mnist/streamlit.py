@@ -30,11 +30,13 @@ if option == 'Нарисовать':
         image = image.convert('L')
         image = image.resize((28, 28))
 
+        # инверсия цветов
         image = Image.fromarray(255 - np.array(image))
 
         image = np.array(image) / 255.0
         image = image.reshape(1, 28, 28, 1)
 
+        # сохранение изображения
         buffered = io.BytesIO()
         image_to_save = Image.fromarray((image[0, :, :, 0] * 255).astype(np.uint8))
         image_to_save.save(buffered, format="PNG")
